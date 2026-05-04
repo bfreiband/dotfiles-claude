@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
-# Symlink tracked files from this repo into ~/.claude/.
+# Symlink tracked files from this repo into their target locations
+# (~/.claude/ for Claude Code config, ~/.config/<tool>/ for XDG-config tools).
 # Backs up any existing non-symlink target to <path>.pre-dotfiles before linking.
 
 set -euo pipefail
 
 REPO="$(cd "$(dirname "$0")" && pwd)"
 DEST="${HOME}/.claude"
+XDG_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}"
 
-mkdir -p "$DEST/hooks" "$DEST/skills"
+mkdir -p "$DEST/hooks" "$DEST/skills" "$XDG_CONFIG"
 
 link() {
   local src="$1" dst="$2"
@@ -33,6 +35,15 @@ for skill_dir in "$REPO/skills"/*/; do
   name="$(basename "$skill_dir")"
   link "${skill_dir%/}" "$DEST/skills/$name"
 done
+
+# XDG config dirs (e.g. ccstatusline) — link each tool dir individually so
+# unrelated tools' configs in ~/.config are left alone.
+if [[ -d "$REPO/xdg/.config" ]]; then
+  for tool_dir in "$REPO/xdg/.config"/*/; do
+    name="$(basename "$tool_dir")"
+    link "${tool_dir%/}" "$XDG_CONFIG/$name"
+  done
+fi
 
 # Verify env file exists for push-notify
 if [[ ! -f "$DEST/hooks/push-notify.env" ]]; then

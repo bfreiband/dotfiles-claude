@@ -8,6 +8,7 @@ Personal Claude Code configuration synced across machines.
 - `hooks/push-notify.sh` — Pushover notification hook (reads credentials from `~/.claude/hooks/push-notify.env`, which is **not** in this repo)
 - `hooks/push-notify.env.example` — template for the credentials file
 - `skills/go-backend-pro/` — custom user-level skill (the only one whose content lives in this repo)
+- `xdg/.config/<tool>/` — configs for tools that read from `$XDG_CONFIG_HOME` (currently just `ccstatusline`); `install.sh` symlinks each into `~/.config/`
 - `mcp-servers.md` — commands to re-add user-scoped MCP servers on a new machine
 
 ## What's not tracked
