@@ -1,0 +1,4 @@
+.DS_Store
+hooks/push-notify.env
+*.bak
+*.orig
