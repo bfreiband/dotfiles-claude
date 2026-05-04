@@ -2,7 +2,7 @@
 
 `go-backend-pro` lives in `skills/` in this repo — `install.sh` symlinks it into `~/.claude/skills/`.
 
-The skills below are managed by an external skill-installer that drops content into `~/.agents/skills/` and symlinks `~/.claude/skills/<name> -> ../../.agents/skills/<name>`. They're not tracked here. On a new machine, install them via whatever skill-installer you use (e.g. the `find-skills` skill once bootstrapped), pointing it at the upstream sources.
+The skills below are managed by `npx skills` (content lives in `~/.agents/skills/<name>`, with `~/.claude/skills/<name>` symlinked to it). `install.py` parses the table below and runs `npx skills add <url> --skill <name> -g --agent claude-code -y` for any row whose destination is missing — so on a new machine, `./install.py` is enough.
 
 | Skill | Upstream |
 |---|---|
@@ -11,7 +11,7 @@ The skills below are managed by an external skill-installer that drops content i
 | `swift-testing-pro` | https://github.com/twostraws/swift-testing-agent-skill |
 | `swiftui-pro` | https://github.com/twostraws/swiftui-agent-skill |
 
-To bootstrap on a fresh machine without the installer, the cheap fallback is to clone each upstream repo into `~/.agents/skills/<name>` (or wherever) and create the symlink manually:
+If `npx` isn't available, the fallback is to clone each upstream repo into `~/.agents/skills/<name>` and create the symlink manually:
 
 ```sh
 mkdir -p ~/.agents/skills

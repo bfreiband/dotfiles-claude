@@ -1,4 +1,5 @@
 .DS_Store
 hooks/push-notify.env
+*.local.json
 *.bak
 *.orig
