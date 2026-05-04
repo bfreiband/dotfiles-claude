@@ -9,6 +9,7 @@ The skills below are managed by an external skill-installer that drops content i
 | `find-skills` | https://github.com/vercel-labs/skills (path: `skills/find-skills`) |
 | `swift-concurrency-pro` | https://github.com/twostraws/swift-concurrency-agent-skill |
 | `swift-testing-pro` | https://github.com/twostraws/swift-testing-agent-skill |
+| `swiftui-pro` | https://github.com/twostraws/swiftui-agent-skill |
 
 To bootstrap on a fresh machine without the installer, the cheap fallback is to clone each upstream repo into `~/.agents/skills/<name>` (or wherever) and create the symlink manually:
 
