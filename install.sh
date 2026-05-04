@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 # Symlink tracked files from this repo into their target locations
 # (~/.claude/ for Claude Code config, ~/.config/<tool>/ for XDG-config tools).
-# Backs up any existing non-symlink target to <path>.pre-dotfiles before linking.
+# Backs up any existing non-symlink target into BACKUP_ROOT before linking.
+#
+# Backups go OUTSIDE any tool-scanned directory: previously they landed in
+# place as <path>.pre-dotfiles, but Claude Code scans ~/.claude/skills/ for
+# any subdir with a SKILL.md, so a backup of go-backend-pro/ became a phantom
+# duplicate skill. Out-of-tree backups avoid that class of problem entirely.
 
 set -euo pipefail
 shopt -s nullglob
@@ -9,6 +14,7 @@ shopt -s nullglob
 REPO="$(cd "$(dirname "$0")" && pwd)"
 DEST="${HOME}/.claude"
 XDG_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}"
+BACKUP_ROOT="${HOME}/.dotfiles-claude-backups"
 
 mkdir -p "$DEST/hooks" "$DEST/skills" "$XDG_CONFIG"
 
@@ -17,10 +23,15 @@ link() {
   if [[ -L "$dst" ]]; then
     rm "$dst"
   elif [[ -e "$dst" ]]; then
-    local backup="${dst}.pre-dotfiles"
+    # Mirror the destination path under BACKUP_ROOT, relative to $HOME when
+    # possible so the backup tree is self-describing.
+    local rel="$dst"
+    [[ "$dst" == "$HOME"/* ]] && rel="${dst#$HOME/}"
+    local backup="$BACKUP_ROOT/$rel"
     if [[ -e "$backup" || -L "$backup" ]]; then
-      backup="${dst}.pre-dotfiles.$(date +%Y%m%d-%H%M%S)"
+      backup="${backup}.$(date +%Y%m%d-%H%M%S)"
     fi
+    mkdir -p "$(dirname "$backup")"
     mv "$dst" "$backup"
     echo "  backed up existing $dst -> $backup"
   fi

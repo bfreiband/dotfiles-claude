@@ -34,7 +34,7 @@ $EDITOR ~/.claude/hooks/push-notify.env
 # 4. Re-install upstream-managed skills (see skills.md)
 ```
 
-`install.sh` backs up any existing non-symlinked file in `~/.claude/` to `<path>.pre-dotfiles` before linking.
+`install.sh` backs up any existing non-symlinked target into `~/.dotfiles-claude-backups/<rel-path-from-$HOME>` before linking. Backups live outside `~/.claude/skills/` and `~/.config/<tool>/` so they never get auto-discovered as phantom skills/configs.
 
 ## Assumptions
 
