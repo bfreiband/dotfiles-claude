@@ -4,6 +4,7 @@
 # Backs up any existing non-symlink target to <path>.pre-dotfiles before linking.
 
 set -euo pipefail
+shopt -s nullglob
 
 REPO="$(cd "$(dirname "$0")" && pwd)"
 DEST="${HOME}/.claude"
@@ -16,8 +17,12 @@ link() {
   if [[ -L "$dst" ]]; then
     rm "$dst"
   elif [[ -e "$dst" ]]; then
-    mv "$dst" "${dst}.pre-dotfiles"
-    echo "  backed up existing $dst -> ${dst}.pre-dotfiles"
+    local backup="${dst}.pre-dotfiles"
+    if [[ -e "$backup" || -L "$backup" ]]; then
+      backup="${dst}.pre-dotfiles.$(date +%Y%m%d-%H%M%S)"
+    fi
+    mv "$dst" "$backup"
+    echo "  backed up existing $dst -> $backup"
   fi
   ln -s "$src" "$dst"
   echo "  linked $dst -> $src"
